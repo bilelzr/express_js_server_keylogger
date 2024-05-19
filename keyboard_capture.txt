@@ -1,0 +1,3 @@
+		fzef					\x0\x03clear
+dev mail 
+mail dev dock
